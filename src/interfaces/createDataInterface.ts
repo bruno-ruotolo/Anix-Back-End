@@ -1,6 +1,20 @@
-import { Anime, AnimeGenre, Gender, Genre, Season, Status, Year } from "@prisma/client";
+import {
+  Anime,
+  AnimeGenre,
+  Gender,
+  Genre,
+  Season,
+  Status,
+  User,
+  UserFavoriteGenre,
+  Year,
+} from "@prisma/client";
 
-
+export type UserCreateData = Omit<User, "id" | "createdAt">;
+export type UserFavoriteGenresCreateData = Omit<
+  UserFavoriteGenre,
+  "id" | "userId"
+>;
 export type StatusCreateData = Omit<Status, "id">;
 export type GenreCreateData = Omit<Genre, "id">;
 export type YearCreateData = Omit<Year, "id">;

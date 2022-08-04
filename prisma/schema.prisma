@@ -6,3 +6,143 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  username  String
+  image     String
+  genderId  Int
+  createdAt DateTime @default(now())
+
+  gender            Gender              @relation(fields: [genderId], references: [id])
+  sessions          Session[]
+  UserFavoriteAnime UserFavoriteAnime[]
+  UserRateAnime     UserRateAnime[]
+  UserStatusAnime   UserStatusAnime[]
+
+  @@map("users")
+}
+
+model Gender {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  users User[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     Int      @unique
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Status {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  UserStatusAnime UserStatusAnime[]
+}
+
+model UserStatusAnime {
+  id       Int @id @default(autoincrement())
+  statusId Int
+  userId   Int
+  animeId  Int
+
+  status Status @relation(fields: [statusId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  anime  Anime  @relation(fields: [animeId], references: [id])
+
+  @@unique([statusId, userId, animeId])
+}
+
+model UserFavoriteGenre {
+  id            Int @id @default(autoincrement())
+  userId        Int @unique
+  firstGenreId  Int
+  secondGenreId Int
+  thirdGenreId  Int
+
+  firstGenre  Genre @relation("FirstGenre", fields: [firstGenreId], references: [id])
+  secondGenre Genre @relation("SecondGenre", fields: [secondGenreId], references: [id])
+  thirdGenre  Genre @relation("ThirdGenre", fields: [thirdGenreId], references: [id])
+}
+
+model Anime {
+  id          Int    @id @default(autoincrement())
+  title       String @unique
+  image       String
+  episodes    Int
+  duration    Int
+  description String
+  yearId      Int
+  seasonId    Int
+
+  year              Year                @relation(fields: [yearId], references: [id])
+  season            Season              @relation(fields: [seasonId], references: [id])
+  animesGenres      AnimeGenre[]
+  UserFavoriteAnime UserFavoriteAnime[]
+  UserRateAnime     UserRateAnime[]
+  UserStatusAnime   UserStatusAnime[]
+}
+
+model Year {
+  id   Int @id @default(autoincrement())
+  year Int @unique
+
+  animes Anime[]
+}
+
+model Season {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  animes Anime[]
+}
+
+model Genre {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  animeGenres AnimeGenre[]
+
+  firstGenre  UserFavoriteGenre[] @relation("FirstGenre")
+  secondGenre UserFavoriteGenre[] @relation("SecondGenre")
+  thirdGenre  UserFavoriteGenre[] @relation("ThirdGenre")
+}
+
+model AnimeGenre {
+  id      Int @id @default(autoincrement())
+  animeId Int
+  genreId Int
+
+  anime Anime @relation(fields: [animeId], references: [id])
+  genre Genre @relation(fields: [genreId], references: [id])
+}
+
+model UserFavoriteAnime {
+  id      Int @id @default(autoincrement())
+  userId  Int
+  animeId Int
+
+  user  User  @relation(fields: [userId], references: [id])
+  anime Anime @relation(fields: [animeId], references: [id])
+
+  @@unique([userId, animeId])
+}
+
+model UserRateAnime {
+  id      Int @id @default(autoincrement())
+  userId  Int
+  animeId Int
+  rate    Int
+
+  user  User  @relation(fields: [userId], references: [id])
+  anime Anime @relation(fields: [animeId], references: [id])
+
+  @@unique([userId, animeId])
+}

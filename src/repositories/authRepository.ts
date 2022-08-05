@@ -32,9 +32,9 @@ async function createUser(
 
 const authRepository = {
   getUserByEmail,
-  getGenderById,
   getUserById,
   getGenreById,
+  getGenderById,
   createUser,
 };
 

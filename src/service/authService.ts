@@ -7,6 +7,7 @@ import {
 import authRepository from "../repositories/authRepository.js";
 import { conflictError, notFoundError } from "../utils/errorUtil.js";
 
+//SERVICES
 async function signUpService(
   userInformations: UserCreateData,
   userFavoriteGenres: UserFavoriteGenresCreateData
@@ -14,7 +15,6 @@ async function signUpService(
   const { email, genderId, password } = userInformations;
   const { firstGenreId, secondGenreId, thirdGenreId } = userFavoriteGenres;
 
-  await validateEmail(email);
   await validateGender(genderId);
   await validateAnimeGenres(firstGenreId);
   await validateAnimeGenres(secondGenreId);
@@ -28,11 +28,20 @@ async function signUpService(
   );
 }
 
+async function getAllGenresService() {
+  return await authRepository.getAllGenres();
+}
+
+async function getAllGendersService() {
+  return await authRepository.getAllGenders();
+}
+
 async function validateEmail(email: string) {
   const emailResult = await authRepository.getUserByEmail(email);
   if (emailResult) throw conflictError("This email is already in use");
 }
 
+// AUX FUNCTIONS
 async function validateGender(genderId: number) {
   const genderResult = await authRepository.getGenderById(genderId);
   if (!genderResult) throw notFoundError("Gender Not Found");
@@ -49,6 +58,11 @@ async function encryptPassword(password: string) {
   return passwordHash;
 }
 
-const authService = { signUpService };
+const authService = {
+  signUpService,
+  getAllGenresService,
+  getAllGendersService,
+  validateEmail,
+};
 
 export default authService;

@@ -20,6 +20,14 @@ async function getGenreById(id: number) {
   return await prisma.genre.findUnique({ where: { id } });
 }
 
+async function getAllGenres() {
+  return await prisma.genre.findMany();
+}
+
+async function getAllGenders() {
+  return await prisma.gender.findMany();
+}
+
 async function createUser(
   userInformations: UserCreateData,
   userFavoriteGenres: UserFavoriteGenresCreateData
@@ -36,6 +44,8 @@ const authRepository = {
   getGenreById,
   getGenderById,
   createUser,
+  getAllGenres,
+  getAllGenders,
 };
 
 export default authRepository;

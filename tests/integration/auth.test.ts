@@ -34,3 +34,40 @@ describe("POST /signUp Suite", () => {
     expect(statusCode).toBe(201);
   });
 });
+
+describe("GET /genres suite", () => {
+  it("should return 200 and all the genres", async () => {
+    const GENRE_QUANTITY = 30;
+
+    const result = await agent.get("/genres");
+    const { statusCode } = result;
+
+    expect(result.body).toHaveLength(GENRE_QUANTITY);
+    expect(statusCode).toBe(200);
+  });
+});
+
+describe("GET /genders suite", () => {
+  it("should return 200 and all the genders", async () => {
+    const GENDER_QUANTITY = 5;
+
+    const result = await agent.get("/genders");
+    const { statusCode } = result;
+
+    expect(result.body).toHaveLength(GENDER_QUANTITY);
+    expect(statusCode).toBe(200);
+  });
+});
+
+describe("GET /emailValidate suite", () => {
+  it("given a valid email, should not call a error", async () => {
+    const userInformations = authFactory.createUserInformationBody();
+
+    const result = await agent
+      .post("/emailValidate")
+      .send({ email: userInformations.email });
+    const { statusCode } = result;
+
+    expect(statusCode).toBe(200);
+  });
+});

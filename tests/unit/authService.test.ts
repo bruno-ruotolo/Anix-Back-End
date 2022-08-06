@@ -14,10 +14,6 @@ describe("signup unit test suite", () => {
     const userFavoriteGenres = authFactory.createUserFavoriteGenresBody();
 
     jest
-      .spyOn(authRepository, "getUserByEmail")
-      .mockImplementationOnce((): any => {});
-
-    jest
       .spyOn(authRepository, "getGenderById")
       .mockImplementationOnce((): any => {
         return { id: 1, name: "Male" };
@@ -37,49 +33,15 @@ describe("signup unit test suite", () => {
 
     await authService.signUpService(userInformations, userFavoriteGenres);
 
-    expect(authRepository.getUserByEmail).toBeCalled();
     expect(authRepository.getGenderById).toBeCalled();
     expect(authRepository.getGenreById).toBeCalled();
     expect(bcrypt.hashSync).toBeCalled();
     expect(authRepository.createUser).toBeCalled();
   });
 
-  it("given a invalid email, should call conflictError", async () => {
-    const userInformations = authFactory.createUserInformationBody();
-    const userFavoriteGenres = authFactory.createUserFavoriteGenresBody();
-
-    jest
-      .spyOn(authRepository, "getUserByEmail")
-      .mockImplementationOnce((): any => {
-        return {
-          id: 1,
-          email: "email@email.com",
-          password: "Password123",
-          username: "Usernname",
-          image: "imagem.png",
-          genderId: 1,
-          createdAt: "24/05/1999",
-        };
-      });
-
-    const promise = authService.signUpService(
-      userInformations,
-      userFavoriteGenres
-    );
-
-    expect(authRepository.getUserByEmail).toBeCalled();
-    expect(promise).rejects.toEqual(
-      conflictError("This email is already in use")
-    );
-  });
-
   it("given a invalid gender, should call notFoundError", async () => {
     const userInformations = authFactory.createUserInformationBody();
     const userFavoriteGenres = authFactory.createUserFavoriteGenresBody();
-
-    jest
-      .spyOn(authRepository, "getUserByEmail")
-      .mockImplementationOnce((): any => {});
 
     jest
       .spyOn(authRepository, "getGenderById")
@@ -90,7 +52,6 @@ describe("signup unit test suite", () => {
       userFavoriteGenres
     );
 
-    expect(authRepository.getUserByEmail).toBeCalled();
     expect(authRepository.getGenderById).toBeCalled();
     expect(promise).rejects.toEqual(notFoundError("Gender Not Found"));
   });
@@ -98,10 +59,6 @@ describe("signup unit test suite", () => {
   it("given a invalid anime genrer, should call notFoundError", async () => {
     const userInformations = authFactory.createUserInformationBody();
     const userFavoriteGenres = authFactory.createUserFavoriteGenresBody();
-
-    jest
-      .spyOn(authRepository, "getUserByEmail")
-      .mockImplementationOnce((): any => {});
 
     jest.spyOn(authRepository, "getGenderById").mockImplementation((): any => {
       return { id: 1, name: "Male" };
@@ -116,9 +73,62 @@ describe("signup unit test suite", () => {
       userFavoriteGenres
     );
 
-    expect(authRepository.getUserByEmail).toBeCalled();
     expect(authRepository.getGenderById).toBeCalled();
     expect(authRepository.getGenreById).toBeCalled();
     expect(promise).rejects.toEqual(notFoundError("Genre Not Found"));
+  });
+});
+
+describe("genres unit test suite", () => {
+  it("should call getAllGenres", async () => {
+    jest
+      .spyOn(authRepository, "getAllGenres")
+      .mockImplementationOnce((): any => {});
+
+    await authService.getAllGenresService();
+
+    expect(authRepository.getAllGenres).toBeCalled();
+  });
+});
+
+describe("genders unit test suite", () => {
+  it("should call getAllGenders", async () => {
+    jest
+      .spyOn(authRepository, "getAllGenders")
+      .mockImplementationOnce((): any => {});
+
+    await authService.getAllGendersService();
+
+    expect(authRepository.getAllGenders).toBeCalled();
+  });
+});
+
+describe("validate email unit test suite", () => {
+  it("given a valid email, should not call a error", async () => {
+    const userInformations = authFactory.createUserInformationBody();
+
+    jest
+      .spyOn(authRepository, "getUserByEmail")
+      .mockImplementation((): any => {});
+
+    const promise = authService.validateEmail(userInformations.email);
+
+    expect(authRepository.getUserByEmail).toBeCalled();
+    expect(promise).resolves;
+  });
+
+  it("given a invalid email, should call conflictError", async () => {
+    const userInformations = authFactory.createUserInformationBody();
+
+    jest.spyOn(authRepository, "getUserByEmail").mockImplementation((): any => {
+      return { id: 1, email: "email@email" };
+    });
+
+    const promise = authService.validateEmail(userInformations.email);
+
+    expect(authRepository.getUserByEmail).toBeCalled();
+    expect(promise).rejects.toEqual(
+      conflictError("This email is already in use")
+    );
   });
 });

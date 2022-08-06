@@ -1,10 +1,15 @@
+import jwt from "jsonwebtoken";
 import { jest } from "@jest/globals";
 import bcrypt from "bcrypt";
 
 import authService from "../../src/service/authService.js";
 import authRepository from "../../src/repositories/authRepository.js";
 import authFactory from "../factories/authFactory.js";
-import { conflictError, notFoundError } from "../../src/utils/errorUtil.js";
+import {
+  conflictError,
+  notFoundError,
+  unauthorizedError,
+} from "../../src/utils/errorUtil.js";
 
 jest.mock("../../src/repositories/authRepository");
 
@@ -129,6 +134,74 @@ describe("validate email unit test suite", () => {
     expect(authRepository.getUserByEmail).toBeCalled();
     expect(promise).rejects.toEqual(
       conflictError("This email is already in use")
+    );
+  });
+});
+
+describe("signin unit test suite", () => {
+  it("given a valid user, should call createSession and send a token", async () => {
+    const { email, password } = authFactory.createUserInformationBody();
+    const signInData = { email, password };
+
+    jest.spyOn(authRepository, "getUserByEmail").mockImplementation((): any => {
+      return { id: 1, email: "email@email" };
+    });
+
+    jest.spyOn(bcrypt, "compareSync").mockImplementation((): any => {
+      return true;
+    });
+
+    jest.spyOn(jwt, "sign").mockImplementation((): any => {
+      return "as5d4as5d48w47/74sd!";
+    });
+    jest
+      .spyOn(authRepository, "createSession")
+      .mockImplementationOnce((): any => {});
+
+    const token = await authService.signInService(signInData);
+
+    expect(authRepository.getUserByEmail).toBeCalled();
+    expect(jwt.sign).toBeCalled();
+    expect(bcrypt.compareSync).toBeCalled();
+    expect(authRepository.createSession).toBeCalled();
+    expect(token).not.toBeNull;
+    expect(token).not.toBeUndefined;
+  });
+
+  it("given a invalid email, should call unauthorizedError", async () => {
+    const { email, password } = authFactory.createUserInformationBody();
+    const signInData = { email, password };
+
+    jest
+      .spyOn(authRepository, "getUserByEmail")
+      .mockImplementation((): any => {});
+
+    const promise = authService.signInService(signInData);
+
+    expect(authRepository.getUserByEmail).toBeCalled();
+    expect(promise).rejects.toEqual(
+      unauthorizedError("Username/Password is not valid")
+    );
+  });
+
+  it("given a invalid password/email combination, should call unauthorizedError", async () => {
+    const { email, password } = authFactory.createUserInformationBody();
+    const signInData = { email, password };
+
+    jest.spyOn(authRepository, "getUserByEmail").mockImplementation((): any => {
+      return { id: 1, email: "email@email" };
+    });
+
+    jest.spyOn(bcrypt, "compareSync").mockImplementation((): any => {
+      return false;
+    });
+
+    const promise = authService.signInService(signInData);
+
+    expect(authRepository.getUserByEmail).toBeCalled();
+    expect(bcrypt.compareSync).toBeCalled();
+    expect(promise).rejects.toEqual(
+      unauthorizedError("Username/Password is not valid")
     );
   });
 });

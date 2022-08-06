@@ -71,3 +71,38 @@ describe("GET /emailValidate suite", () => {
     expect(statusCode).toBe(200);
   });
 });
+
+describe("POST / suite", () => {
+  it("given a valid email/password, should return 200 and persist token", async () => {
+    const userInformations = await scenarioFactory.signInScenario();
+    const { email, password } = userInformations;
+
+    const result = await agent.post("/").send({ email, password });
+    const { statusCode } = result;
+    const { text: token } = result;
+
+    const tokenCreated = await prisma.session.findUnique({ where: { token } });
+
+    expect(token).not.toBeUndefined();
+    expect(token).not.toBeNull();
+    expect(tokenCreated).not.toBeUndefined();
+    expect(tokenCreated).not.toBeNull();
+    expect(statusCode).toBe(200);
+  });
+
+  it("given a invalid email/password, should return 401 and not persist token", async () => {
+    const userInformations = await scenarioFactory.signInScenario();
+    const { email, password } = userInformations;
+
+    const result = await agent
+      .post("/")
+      .send({ email, password: "123456Test%" });
+    const { statusCode } = result;
+    const { text: token } = result;
+
+    const tokenCreated = await prisma.session.findUnique({ where: { token } });
+
+    expect(tokenCreated).toBeNull();
+    expect(statusCode).toBe(401);
+  });
+});

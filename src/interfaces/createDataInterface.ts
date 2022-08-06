@@ -22,3 +22,4 @@ export type SeasonCreateData = Omit<Season, "id">;
 export type AnimeCreateData = Omit<Anime, "id">;
 export type GenderCreateData = Omit<Gender, "id">;
 export type AnimeGenreCreateData = Omit<AnimeGenre, "id">;
+export type SignIn = Omit<UserCreateData, "username" | "image" | "genderId">;

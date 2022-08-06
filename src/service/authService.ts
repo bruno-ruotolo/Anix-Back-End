@@ -1,11 +1,19 @@
+import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 import {
+  SignIn,
   UserCreateData,
   UserFavoriteGenresCreateData,
 } from "../interfaces/createDataInterface.js";
 import authRepository from "../repositories/authRepository.js";
-import { conflictError, notFoundError } from "../utils/errorUtil.js";
+import {
+  conflictError,
+  notFoundError,
+  unauthorizedError,
+} from "../utils/errorUtil.js";
+import utils from "../utils/utils.js";
 
 //SERVICES
 async function signUpService(
@@ -20,12 +28,23 @@ async function signUpService(
   await validateAnimeGenres(secondGenreId);
   await validateAnimeGenres(thirdGenreId);
 
-  const passwordHash = await encryptPassword(password);
+  const passwordHash = await utils.encryptPassword(password);
 
   await authRepository.createUser(
     { ...userInformations, password: passwordHash },
     userFavoriteGenres
   );
+}
+
+async function signInService(signInBody: SignIn) {
+  const { email, password } = signInBody;
+
+  const userResult = await checkEmailExist(email);
+  await decryptPassword(password, userResult.password);
+  const token = await generateJWTToken(userResult);
+
+  await authRepository.createSession(userResult.id, token);
+  return token;
 }
 
 async function getAllGenresService() {
@@ -52,10 +71,28 @@ async function validateAnimeGenres(genreId: number) {
   if (!userResult) throw notFoundError("Genre Not Found");
 }
 
-async function encryptPassword(password: string) {
-  const SALT = 10;
-  const passwordHash = bcrypt.hashSync(password, SALT);
-  return passwordHash;
+async function decryptPassword(password: string, passwordHash: string) {
+  if (!bcrypt.compareSync(password, passwordHash)) {
+    throw unauthorizedError("Username/Password is not valid");
+  }
+}
+
+async function checkEmailExist(email: string) {
+  const userResult = await authRepository.getUserByEmail(email);
+
+  if (!userResult) throw unauthorizedError("Username/Password is not valid");
+  return userResult;
+}
+
+async function generateJWTToken(userResult: User) {
+  const { id, email, username, image } = userResult;
+  const tokenBody = { id, email, username, image };
+  const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+  const EXPIRATION_DATE = { expiresIn: "2d" };
+
+  const token = jwt.sign(tokenBody, JWT_SECRET_KEY, EXPIRATION_DATE);
+
+  return token;
 }
 
 const authService = {
@@ -63,6 +100,7 @@ const authService = {
   getAllGenresService,
   getAllGendersService,
   validateEmail,
+  signInService,
 };
 
 export default authService;

@@ -3,7 +3,8 @@ import { Router } from "express";
 import {
   getAllGendersController,
   getAllGenresController,
-  singUpController,
+  signInController,
+  signUpController,
   validateEmailController,
 } from "../controllers/authController.js";
 import { schemaValidator } from "../middlewares/schemaValidatorMiddleware.js";
@@ -14,9 +15,13 @@ const authRouter = Router();
 authRouter.post(
   "/signup",
   schemaValidator(authSchema.signUpSchema),
-  singUpController
+  signUpController
 );
-
+authRouter.post(
+  "/",
+  schemaValidator(authSchema.signInSchema),
+  signInController
+);
 authRouter.get("/genres", getAllGenresController);
 authRouter.get("/genders", getAllGendersController);
 authRouter.post("/emailValidate", validateEmailController);

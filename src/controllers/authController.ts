@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import {
+  SignIn,
   UserCreateData,
   UserFavoriteGenresCreateData,
 } from "../interfaces/createDataInterface.js";
 
 import authService from "../service/authService.js";
 
-export async function singUpController(req: Request, res: Response) {
+export async function signUpController(req: Request, res: Response) {
   const signUpBody: UserCreateData & UserFavoriteGenresCreateData = req.body;
   const {
     email,
@@ -29,6 +30,14 @@ export async function singUpController(req: Request, res: Response) {
   await authService.signUpService(userInformations, userFavoriteGenres);
 
   res.sendStatus(201);
+}
+
+export async function signInController(req: Request, res: Response) {
+  const signInBody: SignIn = req.body;
+
+  const token = await authService.signInService(signInBody);
+
+  res.status(200).send(token);
 }
 
 export async function validateEmailController(req: Request, res: Response) {

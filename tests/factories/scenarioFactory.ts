@@ -1,4 +1,6 @@
 import prisma from "../../src/config/db.js";
+import utils from "../../src/utils/utils.js";
+import authFactory from "./authFactory.js";
 
 async function resetData() {
   await prisma.$transaction([
@@ -11,8 +13,23 @@ async function resetData() {
   ]);
 }
 
+async function signInScenario() {
+  const userFavoriteGenres = authFactory.createUserFavoriteGenresBody();
+  const userInformations = authFactory.createUserInformationBody();
+  const passwordHash = await utils.encryptPassword(userInformations.password);
+  const user = await prisma.user.create({
+    data: { ...userInformations, password: passwordHash },
+  });
+  await prisma.userFavoriteGenre.create({
+    data: { ...userFavoriteGenres, userId: user.id },
+  });
+
+  return userInformations;
+}
+
 const scenarioFactory = {
   resetData,
+  signInScenario,
 };
 
 export default scenarioFactory;

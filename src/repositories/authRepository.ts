@@ -38,6 +38,10 @@ async function createUser(
   });
 }
 
+async function createSession(userId: number, token: string) {
+  await prisma.session.create({ data: { userId, token } });
+}
+
 const authRepository = {
   getUserByEmail,
   getUserById,
@@ -46,6 +50,7 @@ const authRepository = {
   createUser,
   getAllGenres,
   getAllGenders,
+  createSession,
 };
 
 export default authRepository;

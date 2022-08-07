@@ -41,7 +41,7 @@ async function signInService(signInBody: SignIn) {
 
   const userResult = await checkEmailExist(email);
   await decryptPassword(password, userResult.password);
-  const token = await generateJWTToken(userResult);
+  const token = await utils.generateJWTToken(userResult);
 
   await authRepository.createSession(userResult.id, token);
   return token;
@@ -82,17 +82,6 @@ async function checkEmailExist(email: string) {
 
   if (!userResult) throw unauthorizedError("Username/Password is not valid");
   return userResult;
-}
-
-async function generateJWTToken(userResult: User) {
-  const { id, email, username, image } = userResult;
-  const tokenBody = { id, email, username, image };
-  const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-  const EXPIRATION_DATE = { expiresIn: "2d" };
-
-  const token = jwt.sign(tokenBody, JWT_SECRET_KEY, EXPIRATION_DATE);
-
-  return token;
 }
 
 const authService = {

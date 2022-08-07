@@ -12,6 +12,8 @@ import {
 } from "../../src/utils/errorUtil.js";
 
 jest.mock("../../src/repositories/authRepository");
+jest.resetAllMocks();
+jest.clearAllMocks();
 
 describe("signup unit test suite", () => {
   it("given a valid user, should call createUser", async () => {

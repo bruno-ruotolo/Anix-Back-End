@@ -27,9 +27,26 @@ async function signInScenario() {
   return userInformations;
 }
 
+async function forYouScenario() {
+  const userFavoriteGenres = authFactory.createUserFavoriteGenresBody();
+  const userInformations = authFactory.createUserInformationBody();
+  const passwordHash = await utils.encryptPassword(userInformations.password);
+  const user = await prisma.user.create({
+    data: { ...userInformations, password: passwordHash },
+  });
+  await prisma.userFavoriteGenre.create({
+    data: { ...userFavoriteGenres, userId: user.id },
+  });
+
+  const token = utils.generateJWTToken(user);
+
+  return token;
+}
+
 const scenarioFactory = {
   resetData,
   signInScenario,
+  forYouScenario,
 };
 
 export default scenarioFactory;

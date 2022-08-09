@@ -27,7 +27,7 @@ async function signInScenario() {
   return userInformations;
 }
 
-async function forYouScenario() {
+async function createTokenScenario() {
   const userFavoriteGenres = authFactory.createUserFavoriteGenresBody();
   const userInformations = authFactory.createUserInformationBody();
   const passwordHash = await utils.encryptPassword(userInformations.password);
@@ -46,7 +46,7 @@ async function forYouScenario() {
 const scenarioFactory = {
   resetData,
   signInScenario,
-  forYouScenario,
+  createTokenScenario,
 };
 
 export default scenarioFactory;

@@ -8,3 +8,9 @@ export async function forYouController(req: Request, res: Response) {
 
   res.status(200).send(forYouList);
 }
+
+export async function seasonController(req: Request, res: Response) {
+  const seasonList = await homeService.seasonService();
+
+  res.status(200).send(seasonList);
+}

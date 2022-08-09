@@ -2,6 +2,7 @@ import { jest } from "@jest/globals";
 
 import homeService from "../../src/service/homeService.js";
 import homeRepository from "../../src/repositories/homeRepository.js";
+import authService from "../../src/service/authService.js";
 
 jest.mock("../../src/repositories/homeRepository");
 jest.resetAllMocks();
@@ -62,5 +63,69 @@ describe("forYou unit tests suite", () => {
     expect(homeRepository.getFavoriteGenresByUserId).toBeCalled();
     expect(homeRepository.getAnimesByGenreId).toBeCalled();
     expect(homeRepository.getAllAnime).toBeCalled();
+  });
+});
+
+describe("forYou unit tests suite", () => {
+  it("should call getSeasonList on actual season", async () => {
+    jest
+      .spyOn(homeRepository, "getSeasonList")
+      .mockImplementationOnce((): any => {});
+
+    await homeService.seasonService();
+
+    expect(homeRepository.getSeasonList).toBeCalled();
+  });
+
+  it("should call getSeasonList on winter season", async () => {
+    const mockedDate = new Date(2013, 0, 1);
+
+    jest
+      .spyOn(homeRepository, "getSeasonList")
+      .mockImplementationOnce((): any => {});
+    jest.useFakeTimers().setSystemTime(mockedDate);
+
+    await homeService.seasonService();
+
+    expect(homeRepository.getSeasonList).toBeCalled();
+  });
+
+  it("should call getSeasonList on spring season", async () => {
+    const mockedDate = new Date(2015, 4, 1);
+
+    jest
+      .spyOn(homeRepository, "getSeasonList")
+      .mockImplementationOnce((): any => {});
+    jest.useFakeTimers().setSystemTime(mockedDate);
+
+    await homeService.seasonService();
+
+    expect(homeRepository.getSeasonList).toBeCalled();
+  });
+
+  it("should call getSeasonList on summer season", async () => {
+    const mockedDate = new Date(2000, 8, 1);
+
+    jest
+      .spyOn(homeRepository, "getSeasonList")
+      .mockImplementationOnce((): any => {});
+    jest.useFakeTimers().setSystemTime(mockedDate);
+
+    await homeService.seasonService();
+
+    expect(homeRepository.getSeasonList).toBeCalled();
+  });
+
+  it("should call getSeasonList on fall season", async () => {
+    const mockedDate = new Date(1998, 11, 1);
+
+    jest
+      .spyOn(homeRepository, "getSeasonList")
+      .mockImplementationOnce((): any => {});
+    jest.useFakeTimers().setSystemTime(mockedDate);
+
+    await homeService.seasonService();
+
+    expect(homeRepository.getSeasonList).toBeCalled();
   });
 });

@@ -16,6 +16,16 @@ async function forYouService(userId: number) {
   return randomAnime;
 }
 
+async function seasonService() {
+  const currentSeason = getCurrentSeason();
+  const [season, year] = currentSeason;
+
+  const seasonList = homeRepository.getSeasonList(season, parseInt(year));
+
+  return seasonList;
+}
+
+//AUTH FUNCTIONS
 async function getRandomAnime(
   arr: (
     | (AnimeGenre & {
@@ -32,10 +42,31 @@ async function getRandomAnime(
   return randomAnime;
 }
 
-const homeService = { forYouService };
-
-export default homeService;
-
 function randomIndex(arrayLength: number) {
   return Math.floor(Math.random() * arrayLength);
 }
+
+function getCurrentSeason() {
+  const actualDate = new Date().toJSON();
+  const year = actualDate.slice(0, 4);
+  const month = parseInt(actualDate.slice(5, 7));
+
+  if (month >= 1 && month <= 3) {
+    return ["Winter", year];
+  }
+
+  if (month >= 4 && month <= 6) {
+    return ["Spring", year];
+  }
+
+  if (month >= 7 && month <= 9) {
+    return ["Summer", year];
+  }
+
+  if (month >= 10 && month <= 12) {
+    return ["Fall", year];
+  }
+}
+
+const homeService = { forYouService, seasonService };
+export default homeService;

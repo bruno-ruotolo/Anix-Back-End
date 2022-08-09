@@ -31,9 +31,20 @@ async function getAllAnime() {
   return await prisma.anime.findMany();
 }
 
+async function getSeasonList(season: string, year: number) {
+  return await prisma.anime.findMany({
+    include: {
+      year: true,
+      season: true,
+    },
+    where: { year: { year }, season: { name: season } },
+  });
+}
+
 const homeRepository = {
   getFavoriteGenresByUserId,
   getAnimesByGenreId,
   getAllAnime,
+  getSeasonList,
 };
 export default homeRepository;

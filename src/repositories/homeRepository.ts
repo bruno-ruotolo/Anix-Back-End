@@ -1,7 +1,11 @@
 import prisma from "../config/db.js";
 
 async function getFavoriteGenresByUserId(id: number) {
-  return await prisma.userFavoriteGenre.findUnique({ where: { id } });
+  const result = await prisma.userFavoriteGenre.findUnique({
+    where: { userId: id },
+  });
+
+  return result;
 }
 
 async function getAnimesByGenreId(

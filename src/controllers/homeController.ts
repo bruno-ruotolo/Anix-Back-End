@@ -14,3 +14,9 @@ export async function seasonController(req: Request, res: Response) {
 
   res.status(200).send(seasonList);
 }
+
+export async function popularController(req: Request, res: Response) {
+  const seasonList = await homeService.popularService();
+
+  res.status(200).send(seasonList);
+}

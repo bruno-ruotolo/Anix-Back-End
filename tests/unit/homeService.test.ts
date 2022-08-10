@@ -66,7 +66,7 @@ describe("forYou unit tests suite", () => {
   });
 });
 
-describe("forYou unit tests suite", () => {
+describe("season unit tests suite", () => {
   it("should call getSeasonList on actual season", async () => {
     jest
       .spyOn(homeRepository, "getSeasonList")
@@ -127,5 +127,17 @@ describe("forYou unit tests suite", () => {
     await homeService.seasonService();
 
     expect(homeRepository.getSeasonList).toBeCalled();
+  });
+});
+
+describe("popular unit tests suite", () => {
+  it("should call getPopularList on actual season", async () => {
+    jest
+      .spyOn(homeRepository, "getPopularList")
+      .mockImplementationOnce((): any => {});
+
+    await homeService.popularService();
+
+    expect(homeRepository.getPopularList).toBeCalled();
   });
 });

@@ -1,0 +1,9 @@
+// DATABASE_URL= DataBase URL
+// PORT= Local Running Port
+// JWT_SECRET_KEY= A Secret Key for JWT Token
+// NODE_ENV = Current Environment (dev or test)
+
+//--DOCKER--
+// POSTGRES_USER= Postgres user
+// POSTGRES_PASSWORD= Postgres password
+// POSTGRES_DB= DataBase Name

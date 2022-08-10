@@ -38,6 +38,20 @@ async function getSeasonList(season: string, year: number) {
       season: true,
     },
     where: { year: { year }, season: { name: season } },
+    orderBy: { title: "asc" },
+  });
+}
+
+async function getPopularList() {
+  return await prisma.anime.findMany({
+    include: {
+      _count: { select: { UserFavoriteAnime: true } },
+    },
+    orderBy: {
+      UserFavoriteAnime: {
+        _count: "desc",
+      },
+    },
   });
 }
 
@@ -46,5 +60,6 @@ const homeRepository = {
   getAnimesByGenreId,
   getAllAnime,
   getSeasonList,
+  getPopularList,
 };
 export default homeRepository;

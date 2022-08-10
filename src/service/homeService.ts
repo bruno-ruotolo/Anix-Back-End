@@ -20,9 +20,13 @@ async function seasonService() {
   const currentSeason = getCurrentSeason();
   const [season, year] = currentSeason;
 
-  const seasonList = homeRepository.getSeasonList(season, parseInt(year));
-
+  const seasonList = await homeRepository.getSeasonList(season, parseInt(year));
   return seasonList;
+}
+
+async function popularService() {
+  const popularList = await homeRepository.getPopularList();
+  return popularList;
 }
 
 //AUTH FUNCTIONS
@@ -68,5 +72,5 @@ function getCurrentSeason() {
   }
 }
 
-const homeService = { forYouService, seasonService };
+const homeService = { forYouService, seasonService, popularService };
 export default homeService;

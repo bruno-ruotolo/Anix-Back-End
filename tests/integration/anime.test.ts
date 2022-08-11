@@ -55,20 +55,18 @@ describe("GET /anime/:id test suite", () => {
 });
 
 //RATE
-//FIXME: FIX TESTS
 describe("GET /anime/:id/rate test suite", () => {
-  it("given a valid token and body rate, return 201", async () => {
+  it("given a valid token, anime id and body rate, return 201 and persist the rate", async () => {
     const ANIME_ID = 1;
     const RATE = faker.datatype.number({ min: 1, max: 5 });
-    const { token, user } = await scenarioFactory.animeScenario();
-    const { id } = user;
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
 
     const result = await agent
       .post(`/anime/${ANIME_ID}/rate`)
-      .send({ RATE })
+      .send({ rate: RATE })
       .set("Authorization", `Bearer ${token}`);
     const { statusCode } = result;
-
     const createdRate = await prisma.userRateAnime.findUnique({
       where: { userId_animeId: { userId: id, animeId: ANIME_ID } },
     });
@@ -80,11 +78,13 @@ describe("GET /anime/:id/rate test suite", () => {
 
   it("given a invalid anime, return 404", async () => {
     const ANIME_ID = 10000;
-    const { token, user } = await scenarioFactory.animeScenario();
-    const { id } = user;
+    const RATE = faker.datatype.number({ min: 1, max: 5 });
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
 
     const result = await agent
       .post(`/anime/${ANIME_ID}/rate`)
+      .send({ rate: RATE })
       .set("Authorization", `Bearer ${token}`);
     const { statusCode } = result;
 
@@ -98,8 +98,8 @@ describe("GET /anime/:id/rate test suite", () => {
 
   it("given a invalid token, return 500", async () => {
     const ANIME_ID = 1;
-    const { token, user } = await scenarioFactory.animeScenario();
-    const { id } = user;
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
 
     const result = await agent
       .post(`/anime/${ANIME_ID}/rate`)
@@ -111,6 +111,221 @@ describe("GET /anime/:id/rate test suite", () => {
     });
 
     expect(createdRate).toBeNull();
+    expect(statusCode).toBe(500);
+  });
+});
+
+//FAVORITE
+describe("GET /anime/:id/favorite test suite", () => {
+  it("given a valid token and anime id, return 201 and persistde favorite", async () => {
+    const ANIME_ID = 1;
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+
+    const result = await agent
+      .post(`/anime/${ANIME_ID}/favorite`)
+      .set("Authorization", `Bearer ${token}`);
+    const { statusCode } = result;
+    const createdFavorite = await prisma.userFavoriteAnime.findUnique({
+      where: { userId_animeId: { userId: id, animeId: ANIME_ID } },
+    });
+
+    expect(createdFavorite).not.toBeNull();
+    expect(createdFavorite).not.toBeUndefined();
+    expect(statusCode).toBe(201);
+  });
+
+  it("given a invalid anime, return 404", async () => {
+    const ANIME_ID = 10000;
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+
+    const result = await agent
+      .post(`/anime/${ANIME_ID}/favorite`)
+      .set("Authorization", `Bearer ${token}`);
+    const { statusCode } = result;
+
+    const createdFavorite = await prisma.userFavoriteAnime.findUnique({
+      where: { userId_animeId: { userId: id, animeId: ANIME_ID } },
+    });
+
+    expect(createdFavorite).toBeNull();
+    expect(statusCode).toBe(404);
+  });
+
+  it("given a invalid token, return 500", async () => {
+    const ANIME_ID = 1;
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+
+    const result = await agent
+      .post(`/anime/${ANIME_ID}/favorite`)
+      .set("Authorization", `Bearer asdasdasd4554w89d48d4a564sd`);
+    const { statusCode } = result;
+
+    const createdFavorite = await prisma.userFavoriteAnime.findUnique({
+      where: { userId_animeId: { userId: id, animeId: ANIME_ID } },
+    });
+
+    expect(createdFavorite).toBeNull();
+    expect(statusCode).toBe(500);
+  });
+});
+
+describe("DELETE /anime/:id/favorite test suite", () => {
+  it("given a valid token and anime id, return 200 and delete the persisted favorite", async () => {
+    const ANIME_ID = 1;
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+    await scenarioFactory.deleteFavoriteScenario(id, ANIME_ID);
+
+    const result = await agent
+      .delete(`/anime/${ANIME_ID}/favorite`)
+      .set("Authorization", `Bearer ${token}`);
+    const { statusCode } = result;
+
+    const createdFavorite = await prisma.userFavoriteAnime.findUnique({
+      where: { userId_animeId: { userId: id, animeId: ANIME_ID } },
+    });
+
+    expect(createdFavorite).toBeNull();
+    expect(statusCode).toBe(200);
+  });
+
+  it("given a invalid anime, return 404", async () => {
+    const ANIME_ID = 10000;
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+
+    const result = await agent
+      .delete(`/anime/${ANIME_ID}/favorite`)
+      .set("Authorization", `Bearer ${token}`);
+    const { statusCode } = result;
+
+    expect(statusCode).toBe(404);
+  });
+
+  it("given a invalid token, return 500", async () => {
+    const ANIME_ID = 1;
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+
+    const result = await agent
+      .delete(`/anime/${ANIME_ID}/favorite`)
+      .set("Authorization", `Bearer asdasdasd4554w89d48d4a564sd`);
+    const { statusCode } = result;
+
+    expect(statusCode).toBe(500);
+  });
+});
+
+//STATUS
+describe("GET /anime/:id/status test suite", () => {
+  it("given a valid token, anime id and status body, return 201 and persist status", async () => {
+    const ANIME_ID = 1;
+    const STATUS = faker.datatype.number({ min: 1, max: 3 });
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+
+    const result = await agent
+      .post(`/anime/${ANIME_ID}/status`)
+      .send({ statusId: STATUS })
+      .set("Authorization", `Bearer ${token}`);
+    const { statusCode } = result;
+    const createdStatus = await prisma.userStatusAnime.findUnique({
+      where: { userId_animeId: { userId: id, animeId: ANIME_ID } },
+    });
+
+    expect(createdStatus).not.toBeNull();
+    expect(createdStatus).not.toBeUndefined();
+    expect(statusCode).toBe(201);
+  });
+
+  it("given a invalid anime, return 404", async () => {
+    const ANIME_ID = 10000;
+    const STATUS = faker.datatype.number({ min: 1, max: 3 });
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+
+    const result = await agent
+      .post(`/anime/${ANIME_ID}/status`)
+      .send({ statusId: STATUS })
+      .set("Authorization", `Bearer ${token}`);
+    const { statusCode } = result;
+    const createdStatus = await prisma.userStatusAnime.findUnique({
+      where: { userId_animeId: { userId: id, animeId: ANIME_ID } },
+    });
+    expect(createdStatus).toBeNull();
+    expect(statusCode).toBe(404);
+  });
+
+  it("given a invalid token, return 500", async () => {
+    const ANIME_ID = 1;
+    const STATUS = faker.datatype.number({ min: 1, max: 3 });
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+
+    const result = await agent
+      .post(`/anime/${ANIME_ID}/status`)
+      .send({ statusId: STATUS })
+      .set("Authorization", `Bearer adsd4wd68q4wd6`);
+    const { statusCode } = result;
+
+    const createdStatus = await prisma.userStatusAnime.findUnique({
+      where: { userId_animeId: { userId: id, animeId: ANIME_ID } },
+    });
+
+    expect(createdStatus).toBeNull();
+    expect(statusCode).toBe(500);
+  });
+});
+
+describe("DELETE /anime/:id/status test suite", () => {
+  it("given a valid token and anime id, return 200 and delete the persisted status", async () => {
+    const ANIME_ID = 1;
+    const STATUS = faker.datatype.number({ min: 1, max: 3 });
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+    await scenarioFactory.deleteStatusScenario(id, ANIME_ID, STATUS);
+
+    const result = await agent
+      .delete(`/anime/${ANIME_ID}/status`)
+      .set("Authorization", `Bearer ${token}`);
+    const { statusCode } = result;
+
+    const createdStatus = await prisma.userStatusAnime.findUnique({
+      where: { userId_animeId: { userId: id, animeId: ANIME_ID } },
+    });
+
+    expect(createdStatus).toBeNull();
+    expect(statusCode).toBe(200);
+  });
+
+  it("given a invalid anime, return 404", async () => {
+    const ANIME_ID = 100000;
+    const STATUS = faker.datatype.number({ min: 1, max: 3 });
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+
+    const result = await agent
+      .delete(`/anime/${ANIME_ID}/status`)
+      .set("Authorization", `Bearer ${token}`);
+    const { statusCode } = result;
+
+    expect(statusCode).toBe(404);
+  });
+
+  it("given a invalid token, return 500", async () => {
+    const ANIME_ID = 1;
+    const STATUS = faker.datatype.number({ min: 1, max: 3 });
+    const userInfos = await scenarioFactory.animeScenario();
+    const { token, id } = userInfos;
+
+    const result = await agent
+      .delete(`/anime/${ANIME_ID}/status`)
+      .set("Authorization", `Bearer sdad4w84d89q4wd894`);
+    const { statusCode } = result;
+
     expect(statusCode).toBe(500);
   });
 });

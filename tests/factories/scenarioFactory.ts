@@ -54,9 +54,25 @@ async function animeScenario() {
     data: { ...userFavoriteGenres, userId: user.id },
   });
 
-  const token = utils.generateJWTToken(user);
+  const token = await utils.generateJWTToken(user);
 
-  return { token, user };
+  return { token, id: user.id };
+}
+
+async function deleteFavoriteScenario(userId: number, animeId: number) {
+  const user = await prisma.userFavoriteAnime.create({
+    data: { userId, animeId },
+  });
+}
+
+async function deleteStatusScenario(
+  userId: number,
+  animeId: number,
+  statusId: number
+) {
+  const user = await prisma.userStatusAnime.create({
+    data: { userId, animeId, statusId },
+  });
 }
 
 const scenarioFactory = {
@@ -64,6 +80,8 @@ const scenarioFactory = {
   signInScenario,
   createTokenScenario,
   animeScenario,
+  deleteFavoriteScenario,
+  deleteStatusScenario,
 };
 
 export default scenarioFactory;

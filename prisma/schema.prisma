@@ -64,7 +64,7 @@ model UserStatusAnime {
   user   User   @relation(fields: [userId], references: [id])
   anime  Anime  @relation(fields: [animeId], references: [id])
 
-  @@unique([statusId, userId, animeId])
+  @@unique([ userId, animeId])
   @@map("user_status_animes")
 }
 

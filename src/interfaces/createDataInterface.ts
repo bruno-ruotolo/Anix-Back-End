@@ -7,6 +7,8 @@ import {
   Status,
   User,
   UserFavoriteGenre,
+  UserRateAnime,
+  UserStatusAnime,
   Year,
 } from "@prisma/client";
 
@@ -23,3 +25,5 @@ export type AnimeCreateData = Omit<Anime, "id">;
 export type GenderCreateData = Omit<Gender, "id">;
 export type AnimeGenreCreateData = Omit<AnimeGenre, "id">;
 export type SignIn = Omit<UserCreateData, "username" | "image" | "genderId">;
+export type RateAnime = Omit<UserRateAnime, "id" | "userId" | "animeId">;
+export type StatusAnime = Omit<UserStatusAnime, "id" | "userId" | "animeId">;

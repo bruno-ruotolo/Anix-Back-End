@@ -2,7 +2,6 @@ import { jest } from "@jest/globals";
 
 import homeService from "../../src/service/homeService.js";
 import homeRepository from "../../src/repositories/homeRepository.js";
-import authService from "../../src/service/authService.js";
 
 jest.mock("../../src/repositories/homeRepository");
 jest.resetAllMocks();

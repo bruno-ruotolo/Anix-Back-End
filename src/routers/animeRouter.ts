@@ -6,6 +6,7 @@ import {
   animeDeleteFavoriteController,
   animeCreateStatusController,
   animeDeleteStatusController,
+  animeGetStatusController,
 } from "../controllers/animeController.js";
 import authTokenMiddleware from "../middlewares/authTokenMiddleware.js";
 import { schemaValidator } from "../middlewares/schemaValidatorMiddleware.js";
@@ -45,6 +46,12 @@ animeRouter.delete(
   "/anime/:id/status",
   authTokenMiddleware,
   animeDeleteStatusController
+);
+
+animeRouter.get(
+  "/anime/:id/status",
+  authTokenMiddleware,
+  animeGetStatusController
 );
 
 export default animeRouter;

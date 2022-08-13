@@ -1,5 +1,6 @@
 import { User } from "@prisma/client";
 import { Response, Request } from "express";
+
 import homeService from "../service/homeService.js";
 
 export async function forYouController(req: Request, res: Response) {

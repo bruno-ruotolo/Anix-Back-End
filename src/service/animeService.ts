@@ -72,14 +72,6 @@ async function animeCreateStatusService(
   );
   if (!animeInfos) throw notFoundError("Anime Not Found");
 
-  const statusAnime = await animeRepository.getStatusAnimeByUserIdAndAnimeId(
-    animeId,
-    userId
-  );
-
-  if (statusAnime)
-    throw badRequestError("You've already gave a status to this anime");
-
   await animeRepository.createUserStatusAnime(animeId, userId, statusId);
 }
 
@@ -101,6 +93,11 @@ async function animeDeleteStatusService(animeId: number, userId: number) {
   await animeRepository.deleteUserStatusAnime(animeId, userId);
 }
 
+async function animeGetStatusService() {
+  const status = await animeRepository.getAllStatusAnime();
+  return status;
+}
+
 const animeService = {
   animeInfosService,
   animeCreateRateService,
@@ -108,6 +105,7 @@ const animeService = {
   animeDeleteFavoriteService,
   animeCreateStatusService,
   animeDeleteStatusService,
+  animeGetStatusService,
 };
 
 export default animeService;

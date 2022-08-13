@@ -19,9 +19,32 @@ async function generateJWTToken(userResult: User) {
   return token;
 }
 
+function getCurrentSeason() {
+  const actualDate = new Date().toJSON();
+  const year = actualDate.slice(0, 4);
+  const month = parseInt(actualDate.slice(5, 7));
+
+  if (month >= 1 && month <= 3) {
+    return ["Winter", year];
+  }
+
+  if (month >= 4 && month <= 6) {
+    return ["Spring", year];
+  }
+
+  if (month >= 7 && month <= 9) {
+    return ["Summer", year];
+  }
+
+  if (month >= 10 && month <= 12) {
+    return ["Fall", year];
+  }
+}
+
 const utils = {
   encryptPassword,
   generateJWTToken,
+  getCurrentSeason,
 };
 
 export default utils;

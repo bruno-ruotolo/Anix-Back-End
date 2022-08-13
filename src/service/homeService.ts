@@ -1,5 +1,7 @@
 import { Anime, AnimeGenre } from "@prisma/client";
+
 import homeRepository from "../repositories/homeRepository.js";
+import utils from "../utils/utils.js";
 
 async function forYouService(userId: number) {
   const { firstGenreId, secondGenreId, thirdGenreId } =
@@ -17,7 +19,7 @@ async function forYouService(userId: number) {
 }
 
 async function seasonService() {
-  const currentSeason = getCurrentSeason();
+  const currentSeason = utils.getCurrentSeason();
   const [season, year] = currentSeason;
 
   const seasonList = await homeRepository.getSeasonList(season, parseInt(year));
@@ -49,28 +51,5 @@ async function getRandomAnime(
 function randomIndex(arrayLength: number) {
   return Math.floor(Math.random() * arrayLength);
 }
-
-function getCurrentSeason() {
-  const actualDate = new Date().toJSON();
-  const year = actualDate.slice(0, 4);
-  const month = parseInt(actualDate.slice(5, 7));
-
-  if (month >= 1 && month <= 3) {
-    return ["Winter", year];
-  }
-
-  if (month >= 4 && month <= 6) {
-    return ["Spring", year];
-  }
-
-  if (month >= 7 && month <= 9) {
-    return ["Summer", year];
-  }
-
-  if (month >= 10 && month <= 12) {
-    return ["Fall", year];
-  }
-}
-
 const homeService = { forYouService, seasonService, popularService };
 export default homeService;

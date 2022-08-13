@@ -3,14 +3,29 @@ import prisma from "../config/db.js";
 async function getAnimeByAnimeIdAndUserId(animeId: number, userId: number) {
   const result = await prisma.anime.findUnique({
     include: {
+      year: {
+        select: {
+          year: true,
+        },
+      },
+      season: {
+        select: {
+          name: true,
+        },
+      },
       UserStatusAnime: {
         select: {
           userId: true,
           status: {
-            select: { name: true },
+            select: { name: true, id: true },
           },
         },
         where: { userId },
+      },
+      animesGenres: {
+        select: {
+          genre: true,
+        },
       },
       UserRateAnime: {
         select: {
@@ -89,8 +104,12 @@ async function createUserStatusAnime(
   userId: number,
   statusId: number
 ) {
-  await prisma.userStatusAnime.create({
-    data: { userId, animeId, statusId },
+  await prisma.userStatusAnime.upsert({
+    where: { userId_animeId: { userId, animeId } },
+    update: {
+      statusId,
+    },
+    create: { userId, animeId, statusId },
   });
 }
 
@@ -111,6 +130,12 @@ async function getStatusAnimeByUserIdAndAnimeId(
   return result;
 }
 
+async function getAllStatusAnime() {
+  const result = await prisma.status.findMany();
+
+  return result;
+}
+
 const animeRepository = {
   getAnimeByAnimeIdAndUserId,
   createUserRateAnime,
@@ -121,5 +146,6 @@ const animeRepository = {
   getFavoriteAnimeByUserIdAndAnimeId,
   deleteUserStatusAnime,
   getStatusAnimeByUserIdAndAnimeId,
+  getAllStatusAnime,
 };
 export default animeRepository;

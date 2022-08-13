@@ -267,35 +267,35 @@ describe("anime create status unit tests suite", () => {
     expect(promise).rejects.toEqual(notFoundError("Anime Not Found"));
   });
 
-  it("given a anime that already has a status , should call conflictError", async () => {
-    const USER_ID = faker.datatype.number({ min: 1, max: 100 });
-    const ANIME_ID = faker.datatype.number({ min: 1, max: 100 });
-    const STATUS = faker.datatype.number({ min: 1, max: 3 });
+  // it("given a anime that already has a status , should call badRequestError", async () => {
+  //   const USER_ID = faker.datatype.number({ min: 1, max: 100 });
+  //   const ANIME_ID = faker.datatype.number({ min: 1, max: 100 });
+  //   const STATUS = faker.datatype.number({ min: 1, max: 3 });
 
-    jest
-      .spyOn(animeRepository, "getAnimeByAnimeIdAndUserId")
-      .mockImplementationOnce((): any => {
-        return { id: ANIME_ID };
-      });
+  //   jest
+  //     .spyOn(animeRepository, "getAnimeByAnimeIdAndUserId")
+  //     .mockImplementationOnce((): any => {
+  //       return { id: ANIME_ID };
+  //     });
 
-    jest
-      .spyOn(animeRepository, "getStatusAnimeByUserIdAndAnimeId")
-      .mockImplementationOnce((): any => {
-        return { id: ANIME_ID };
-      });
+  //   jest
+  //     .spyOn(animeRepository, "getStatusAnimeByUserIdAndAnimeId")
+  //     .mockImplementationOnce((): any => {
+  //       return { id: ANIME_ID };
+  //     });
 
-    const promise = animeService.animeCreateStatusService(
-      ANIME_ID,
-      USER_ID,
-      STATUS
-    );
+  //   const promise = animeService.animeCreateStatusService(
+  //     ANIME_ID,
+  //     USER_ID,
+  //     STATUS
+  //   );
 
-    expect(animeRepository.getAnimeByAnimeIdAndUserId).toBeCalled();
-    expect(animeRepository.getStatusAnimeByUserIdAndAnimeId).toBeCalled();
-    expect(promise).rejects.toEqual(
-      badRequestError("You've already gave a status to this anime")
-    );
-  });
+  //   expect(animeRepository.getAnimeByAnimeIdAndUserId).toBeCalled();
+  //   expect(animeRepository.getStatusAnimeByUserIdAndAnimeId).toBeCalled();
+  //   expect(promise).rejects.toEqual(
+  //     badRequestError("You've already gave a status to this anime")
+  //   );
+  // });
 });
 
 describe("anime delete status unit tests suite", () => {

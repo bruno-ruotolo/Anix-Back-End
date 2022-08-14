@@ -21,7 +21,7 @@ async function getGenreById(id: number) {
 }
 
 async function getAllGenres() {
-  return await prisma.genre.findMany();
+  return await prisma.genre.findMany({ orderBy: { name: "asc" } });
 }
 
 async function getAllGenders() {

@@ -230,12 +230,8 @@ describe("anime create status unit tests suite", () => {
     jest
       .spyOn(animeRepository, "getAnimeByAnimeIdAndUserId")
       .mockImplementationOnce((): any => {
-        return { id: ANIME_ID };
+        return true;
       });
-
-    jest
-      .spyOn(animeRepository, "getStatusAnimeByUserIdAndAnimeId")
-      .mockImplementationOnce((): any => {});
 
     jest
       .spyOn(animeRepository, "createUserStatusAnime")
@@ -245,7 +241,6 @@ describe("anime create status unit tests suite", () => {
 
     expect(animeService.animeCreateStatusService).resolves;
     expect(animeRepository.getAnimeByAnimeIdAndUserId).toBeCalled();
-    expect(animeRepository.getStatusAnimeByUserIdAndAnimeId).toBeCalled();
     expect(animeRepository.createUserStatusAnime).toBeCalled();
   });
 
@@ -299,20 +294,20 @@ describe("anime create status unit tests suite", () => {
 });
 
 describe("anime delete status unit tests suite", () => {
-  it("given a valid anime, should call deleteUserFavoriteAnime", async () => {
+  it("given a valid anime, should call deleteUserStatusAnime", async () => {
     const USER_ID = faker.datatype.number({ min: 1, max: 100 });
     const ANIME_ID = faker.datatype.number({ min: 1, max: 100 });
 
     jest
       .spyOn(animeRepository, "getAnimeByAnimeIdAndUserId")
       .mockImplementationOnce((): any => {
-        return { id: ANIME_ID };
+        return true;
       });
 
     jest
       .spyOn(animeRepository, "getStatusAnimeByUserIdAndAnimeId")
       .mockImplementationOnce((): any => {
-        return { id: ANIME_ID };
+        return true;
       });
 
     jest
@@ -340,15 +335,13 @@ describe("anime delete status unit tests suite", () => {
     expect(promise).rejects.toEqual(notFoundError("Anime Not Found"));
   });
 
-  it("given a not favorited anime, should call badRequestError", async () => {
+  it("given a not status anime, should call badRequestError", async () => {
     const USER_ID = faker.datatype.number({ min: 1, max: 100 });
     const ANIME_ID = faker.datatype.number({ min: 1, max: 100 });
 
     jest
       .spyOn(animeRepository, "getAnimeByAnimeIdAndUserId")
-      .mockImplementationOnce((): any => {
-        return { id: ANIME_ID };
-      });
+      .mockImplementationOnce((): any => true);
 
     jest
       .spyOn(animeRepository, "getStatusAnimeByUserIdAndAnimeId")
@@ -361,5 +354,21 @@ describe("anime delete status unit tests suite", () => {
     expect(promise).rejects.toEqual(
       badRequestError("The Anime hasn't any status to remove")
     );
+  });
+});
+
+//GET ALL STATUS
+describe("get all genres status unit tests suite", () => {
+  it(" should call getAllStatusAnime", async () => {
+    jest
+      .spyOn(animeRepository, "getAllStatusAnime")
+      .mockImplementationOnce((): any => {
+        return true;
+      });
+
+    await animeService.animeGetStatusService();
+
+    expect(animeService.animeGetStatusService).resolves;
+    expect(animeRepository.getAllStatusAnime).toBeCalled();
   });
 });

@@ -5,8 +5,8 @@ async function getAnimesSearch(
   yearSearch: string | string[] | any,
   inputSearch: string | string[] | any
 ) {
-  const genre = genreSearch?.trim().toLowerCase();
-  const year = yearSearch?.trim().toLowerCase();
+  const genre: string = genreSearch?.trim().toLowerCase();
+  const year: string = yearSearch?.trim().toLowerCase();
 
   if (genre && !year) {
     const genreAnimes = await searchRepository.getAnimesByGenreId(
@@ -25,7 +25,6 @@ async function getAnimesSearch(
   }
 
   if (genre && year) {
-    console.log("🚀 ~ file: searchService.ts ~ line 23 ~ genre", typeof genre);
     const yearAnimes = await searchRepository.getAnimesByGenreAndYearId(
       parseInt(genre),
       parseInt(year),
@@ -35,7 +34,6 @@ async function getAnimesSearch(
   }
 
   if (!genre && !year && inputSearch) {
-    console.log("🚀 ~ file: searchService.ts ~ line 23 ~ genre", typeof genre);
     const inputSearchAnimes = await searchRepository.getAnimesByName(
       inputSearch
     );
@@ -51,5 +49,5 @@ async function getAllYearsService() {
   return yearsList;
 }
 
-const getAnimesSearchService = { getAnimesSearch, getAllYearsService };
-export default getAnimesSearchService;
+const searchService = { getAnimesSearch, getAllYearsService };
+export default searchService;

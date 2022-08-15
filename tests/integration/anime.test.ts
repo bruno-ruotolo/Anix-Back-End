@@ -303,7 +303,6 @@ describe("DELETE /anime/:id/status test suite", () => {
 
   it("given a invalid anime, return 404", async () => {
     const ANIME_ID = 100000;
-    const STATUS = faker.datatype.number({ min: 1, max: 3 });
     const userInfos = await scenarioFactory.animeScenario();
     const { token, id } = userInfos;
 
@@ -317,13 +316,40 @@ describe("DELETE /anime/:id/status test suite", () => {
 
   it("given a invalid token, return 500", async () => {
     const ANIME_ID = 1;
-    const STATUS = faker.datatype.number({ min: 1, max: 3 });
     const userInfos = await scenarioFactory.animeScenario();
-    const { token, id } = userInfos;
 
     const result = await agent
       .delete(`/anime/${ANIME_ID}/status`)
       .set("Authorization", `Bearer sdad4w84d89q4wd894`);
+    const { statusCode } = result;
+
+    expect(statusCode).toBe(500);
+  });
+});
+
+//GET ALL STATUS
+describe("GET /anime/:id/status Suite", () => {
+  it("given a valid header, should return 200 and the status list", async () => {
+    const token = await scenarioFactory.createTokenScenario();
+
+    const result = await agent
+      .get("/anime/:id/status")
+      .set("Authorization", `Bearer ${token}`);
+
+    const { statusCode } = result;
+
+    expect(result).not.toBeNull();
+    expect(result).not.toBeUndefined();
+    expect(result).not.toBeFalsy();
+    expect(result.body).not.toBeFalsy();
+    expect(statusCode).toBe(200);
+  });
+
+  it("given a invalid header, should return 500", async () => {
+    const result = await agent
+      .get("/anime/:id/status")
+      .set("Authorization", `Bearer sdasdasdasd45144w1545641d658aw`);
+
     const { statusCode } = result;
 
     expect(statusCode).toBe(500);

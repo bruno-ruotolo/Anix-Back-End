@@ -4,10 +4,6 @@ import authTokenMiddleware from "../middlewares/authTokenMiddleware.js";
 
 const profileRouter = Router();
 
-profileRouter.get(
-  "/user/:userId",
-  authTokenMiddleware,
-  getProfileInfosController
-);
+profileRouter.get("/user", authTokenMiddleware, getProfileInfosController);
 
 export default profileRouter;

@@ -96,7 +96,6 @@ describe("GET /home/season Suite", () => {
   });
 
   it("given a invalid header, should return 500 and not return an anime", async () => {
-    const token = await scenarioFactory.createTokenScenario();
     const result = await agent
       .get("/home/popular")
       .set("Authorization", `Bearer sdasdasdasd45144w1545641d658aw`);

@@ -76,7 +76,6 @@ export async function animeDeleteStatusController(req: Request, res: Response) {
 }
 
 export async function animeGetStatusController(req: Request, res: Response) {
-  const userInfos: User = res.locals.token;
   const status = await animeService.animeGetStatusService();
 
   res.status(200).send(status);

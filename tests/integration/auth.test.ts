@@ -92,7 +92,7 @@ describe("POST / suite", () => {
 
   it("given a invalid email/password, should return 401 and not persist token", async () => {
     const userInformations = await scenarioFactory.signInScenario();
-    const { email, password } = userInformations;
+    const { email } = userInformations;
 
     const result = await agent
       .post("/")

@@ -1,9 +1,14 @@
 import { User, UserFavoriteAnime, UserStatusAnime } from "@prisma/client";
 import profileRepository from "../repositories/profileRepository.js";
+import { notFoundError } from "../utils/errorUtil.js";
 
 async function getProfileInfosService(userId: number) {
   const profileInfos = await profileRepository.getProfileByUserId(userId);
+  if (!profileInfos) throw notFoundError("User not found");
+
+  console.log(profileInfos);
   const quantityInfos = getQuantity(profileInfos);
+
   const { id, username, image, UserFavoriteAnime } = profileInfos;
   const returnBody = {
     id,
@@ -33,9 +38,9 @@ function getQuantity(
 ) {
   let episodesNumber = 0;
   let durationTime = 0;
+  const animeDoneQuantity = profileInfos.UserStatusAnime?.length;
 
-  const animeDoneQuantity = profileInfos.UserStatusAnime.length;
-  const quantityInfos = profileInfos.UserStatusAnime.forEach((statusAnime) => {
+  profileInfos.UserStatusAnime?.forEach((statusAnime) => {
     const { duration, episodes } = statusAnime.anime;
     episodesNumber += episodes;
     durationTime += duration;

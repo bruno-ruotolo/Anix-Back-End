@@ -6,7 +6,6 @@ async function getProfileInfosService(userId: number) {
   const profileInfos = await profileRepository.getProfileByUserId(userId);
   if (!profileInfos) throw notFoundError("User not found");
 
-  console.log(profileInfos);
   const quantityInfos = getQuantity(profileInfos);
 
   const { id, username, image, UserFavoriteAnime } = profileInfos;

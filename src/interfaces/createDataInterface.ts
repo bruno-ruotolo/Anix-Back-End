@@ -27,3 +27,4 @@ export type AnimeGenreCreateData = Omit<AnimeGenre, "id">;
 export type SignIn = Omit<UserCreateData, "username" | "image" | "genderId">;
 export type RateAnime = Omit<UserRateAnime, "id" | "userId" | "animeId">;
 export type StatusAnime = Omit<UserStatusAnime, "id" | "userId" | "animeId">;
+export type GenreAnimeCreteData = Omit<AnimeGenre, "id">;

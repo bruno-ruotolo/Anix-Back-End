@@ -1,8 +1,8 @@
-import { Anime } from "@prisma/client";
 import Joi from "joi";
 
-const panelSchema = Joi.object<Anime>({
-  id: Joi.number().required(),
+import { AnimeCreateData } from "../interfaces/createDataInterface.js";
+
+const panelSchema = Joi.object<AnimeCreateData & { genres: number[] }>({
   title: Joi.string().required(),
   image: Joi.string().uri().required(),
   episodes: Joi.number().required(),
@@ -10,6 +10,7 @@ const panelSchema = Joi.object<Anime>({
   description: Joi.string().required(),
   yearId: Joi.number().required(),
   seasonId: Joi.number().required(),
+  genres: Joi.array().required(),
 });
 
 const adminPanelSchema = {

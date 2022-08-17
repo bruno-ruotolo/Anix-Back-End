@@ -13,6 +13,10 @@ async function createGenreAnime(genresMap: AnimeGenreCreateData[]) {
   return await prisma.animeGenre.createMany({ data: genresMap });
 }
 
-const adminRepository = { createAnime, createGenreAnime };
+async function getSeasons() {
+  return await prisma.season.findMany();
+}
+
+const adminRepository = { createAnime, createGenreAnime, getSeasons };
 
 export default adminRepository;

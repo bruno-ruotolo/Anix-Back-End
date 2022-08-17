@@ -21,8 +21,17 @@ async function adminCreateAnimeService(
   await adminRepository.createGenreAnime(genresMap);
 }
 
+async function getSeasonsService(admin: string | string[]) {
+  if (admin !== process.env.ADMIN_SECRET_KEY) {
+    throw unauthorizedError("You're not authorized to do this");
+  }
+  const seasonList = await adminRepository.getSeasons();
+  return seasonList;
+}
+
 const adminService = {
   adminCreateAnimeService,
+  getSeasonsService,
 };
 
 export default adminService;

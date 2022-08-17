@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { adminCreateAnimeController } from "../controllers/adminController.js";
+import {
+  adminCreateAnimeController,
+  getSeasonsController,
+} from "../controllers/adminController.js";
 import { schemaValidator } from "../middlewares/schemaValidatorMiddleware.js";
 import adminPanelSchema from "../schemas/adminPanelSchema.js";
 
@@ -10,5 +13,7 @@ adminRouter.post(
   schemaValidator(adminPanelSchema.panelSchema),
   adminCreateAnimeController
 );
+
+adminRouter.get("/seasons", getSeasonsController);
 
 export default adminRouter;

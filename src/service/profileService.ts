@@ -42,10 +42,10 @@ function getQuantity(
   profileInfos.UserStatusAnime?.forEach((statusAnime) => {
     const { duration, episodes } = statusAnime.anime;
     episodesNumber += episodes;
-    durationTime += duration;
+    durationTime += duration * episodes;
   });
 
-  durationTime = Math.round((durationTime * episodesNumber) / 60);
+  durationTime = Math.round(durationTime / 60);
 
   return { animeDoneQuantity, episodesNumber, durationTime };
 }

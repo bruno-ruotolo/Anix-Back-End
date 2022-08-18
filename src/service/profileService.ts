@@ -45,7 +45,7 @@ function getQuantity(
     durationTime += duration;
   });
 
-  durationTime = Math.round(durationTime / 60);
+  durationTime = Math.round((durationTime * episodesNumber) / 60);
 
   return { animeDoneQuantity, episodesNumber, durationTime };
 }

@@ -69,7 +69,7 @@ Here you can check the endpoints related to the project, as well as their respec
 ```json
 {
   "email": "user@myemail.com",
-  "password": "mypassword", // >= 8 char, one letter, onde number and one special charactere
+  "password": "mypassword", // >= 8 char, one letter, onde number and one special character
   "confirmPassword": "mypassword",
   "username": "My Name",
   "image" : "animagelink.png",
@@ -98,11 +98,9 @@ jwtrandomtoken
 ```
 ---
 
-### Home Houter
+### Data Infos Routes
 
-#### Data Infos Routes
-
-## Get all infos of an especific anime
+##### Get all infos of an especific anime
 - GET _/anime/:id_
 
 - Header
@@ -138,7 +136,7 @@ jwtrandomtoken
 ```
 
 
-## Get a random anime based on the user favorite's genres
+##### Get a random anime based on the user favorite's genres
 - GET _/home/foryou_
 
 - Header
@@ -148,7 +146,7 @@ jwtrandomtoken
 }
 ``` 
 
-## Get all the animes of current season
+##### Get all the animes of current season
 - GET _/home/season_
 
 - Header
@@ -158,7 +156,7 @@ jwtrandomtoken
 }
 ``` 
 
-## Get the most popular animes based on users' favorites
+##### Get the most popular animes based on users' favorites
 - GET _/home/popular_
 
 - Header

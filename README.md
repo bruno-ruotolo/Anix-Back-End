@@ -1,6 +1,6 @@
 <br />
 <div align="center">
-    <img src="./.github/AnixLogo.png" alt="Anix Logo" width="150">
+    <img src="./.github/assets/AnixLogo.png" alt="Anix Logo" width="150">
     <h3 align="center">Anix</h3>
     <p> A personal anime manager
 </div>
@@ -91,6 +91,11 @@ Here you can check the endpoints related to the project, as well as their respec
   "password": "mypassword"
 }
 ```
+
+- Response
+```json
+jwtrandomtoken
+```
 ---
 
 ### Home Houter
@@ -105,7 +110,33 @@ Here you can check the endpoints related to the project, as well as their respec
 {
     "Authorization" : "Bearer <token>"
 }
-``` 
+```
+
+- Response
+```json
+{
+    "avgRate": 0, //Avarage rate from all users
+    "id": 0, // Anime Id
+    "title": "Anime Title",
+    "image": "animeimage.png",
+    "episodes": 0, // Episodes number
+    "duration": 0, // Episode duration
+    "description", "Anime Description";
+    "yearId": 0, // Realeased year ID
+    "seasonId": 0, // Realeased season ID
+    "year": {
+        "year": 2022
+    }
+    "season": {
+        "name": "Season Name"
+    },
+    "UserStatusAnime": {...}[],
+    "animesGenres": {...}[],
+    "UserRateAnime": {...}[],
+    "UserFavoriteAnime": "UserFavoriteAnimes"[]
+}
+```
+
 
 ## Get a random anime based on the user favorite's genres
 - GET _/home/foryou_

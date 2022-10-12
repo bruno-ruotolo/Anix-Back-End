@@ -27,7 +27,7 @@ These are the main tools, frameworks and languages that were used in this projec
 
 ## How to Run
 
-You can use this API in two ways, cloning this repository or testing with our deploy running on Heroku
+You can use this API in two ways, cloning this repository or testing using the deploy running on Heroku
 
 To clone the project, run the following command:
 

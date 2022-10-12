@@ -44,7 +44,7 @@ npm i
 Finally, start the server:
 
 ```git
-npm start
+npm run dev
 ```
 
 You can now access the API's endpoints locally, use the Prisma Migrations to create your database:

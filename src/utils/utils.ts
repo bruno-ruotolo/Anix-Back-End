@@ -12,10 +12,9 @@ async function generateJWTToken(userResult: User) {
   const { id, email, username, image } = userResult;
   const tokenBody = { id, email, username, image };
   const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-  const EXPIRATION_DATE = { expiresIn: "2d" };
+  const EXPIRATION_DATE = { expiresIn: "30d" };
 
   const token = jwt.sign(tokenBody, JWT_SECRET_KEY, EXPIRATION_DATE);
-
   return token;
 }
 
